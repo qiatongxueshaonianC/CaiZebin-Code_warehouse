@@ -1,0 +1,58 @@
+#pragma warning(disable:4996)
+#include<bits/stdc++.h>
+using namespace std;
+int A, B, N,K,best=INT_MAX;
+bool flag = false;
+int judge(int num) {
+	int a = abs(num+1 - B);
+	int b = abs(num*N - B);
+	int c = abs(num - 1 - B);
+	int d = min(a, min(b, c));
+	if (d == a)
+		return 1;
+	if (d == b)
+		return 2;
+	if (d == c)
+		return 3;
+}
+void DFS(int num,int step) {
+	if (flag)
+		return;
+	if (num == B) {
+		best = min(best, step);
+	//	printf("%d\n", step);
+	//	flag = true;
+		return;
+	}
+	if (step >= best)
+		return;
+	switch (judge(num)) {
+	case 1:
+		DFS(num + 1, step + 1);
+		break;
+	case 2:
+		DFS(num*N, step + 1);
+	case 3:
+		DFS(num - 1, step + 1);
+	}	
+}
+int main() {
+	cin >> K;
+	while (K--) {
+		flag = false;
+		scanf("%d%d%d", &A, &B, &N);
+		DFS(A,0);
+	//	printf("%d\n", best);
+	}
+	return 0;
+}
+/*
+3
+3 11 2
+-5 -12 3
+-2 1000 7
+
+2
+-5 -12 3
+-2 1000 7
+*/

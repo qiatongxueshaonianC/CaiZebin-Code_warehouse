@@ -1,0 +1,47 @@
+#pragma warning(disable:4996)
+#include<bits/stdc++.h>
+using namespace std;
+const int P = 1e9 + 7;
+const int maxn = 1048576 + 10;
+typedef unsigned long long ull;
+int N,Max;
+ull PowP[maxn], Harsh[maxn];
+string s;
+map<ull, ull> mp, idx;
+vector<int> ans;
+int main() {
+	iostream::sync_with_stdio(false);
+	cin >> N; cin.ignore();
+	getline(cin, s);
+	ull M = 1, V = 0;
+	for (int i = 0; i < N; i++) {
+		V = V * P + s[i];
+		M *= P;
+	}
+	for (int i = 0; i + N <= s.size(); i++) {
+		int times=++mp[V];
+		if (times > Max) {
+			Max = times;
+			ans.clear();
+			ans.push_back(i);
+		}
+		else if (times == Max) {
+			ans.push_back(i);
+		}
+		if (i + N < s.size())
+			V = V * P - s[i] * M + s[i + N];
+	}
+	string str=s.substr(ans[0],N);
+	for (auto i : ans) {
+		str = min(str, s.substr(i, N));
+	}
+	cout << str << ' ' << Max;
+	return 0;
+}
+/*
+4
+//A can can can a can.
+
+3
+int a=~~~~~~~~~~~~~~~~~~~~~0;
+*/

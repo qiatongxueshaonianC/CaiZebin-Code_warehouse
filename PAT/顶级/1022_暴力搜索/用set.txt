@@ -1,0 +1,73 @@
+#include<bits/stdc++.h>
+using namespace std; 
+const int maxn=110;
+int N,M,L; 
+vector<int> A,temp; 
+set<int> st;
+bool wolf[maxn];
+bool judge(set<int> st){
+	int wolflier=0,lier=0;
+	for(int i=1;i<=N;i++){
+		int beEvalued_id=abs(A[i]);
+		if(A[i]>0&&st.find(beEvalued_id)==st.end())	continue;	//说他是个好人，确实是个好人，没说谎
+		if(A[i]<0&&st.find(beEvalued_id)!=st.end())	continue;	//说他是个坏人，确实是个坏人，没说谎
+		lier++;		//说谎的人加一 
+		if(st.find(i)!=st.end()){
+			wolflier++;	//说谎的狼人加一 
+		} 
+	//	if(lier>L||wolflier>=L)
+	//		return false;
+	}
+	if(lier==L&&(1<=wolflier&&wolflier<M)) 	//2020/5/16/19:37太坑了，没想到说谎的人可以远远超过狼人的数量 
+		return true;						//导致：“所有狼人都说谎”，不符合题目条件。原来写成了wolflier<L 
+	return false; 
+}
+void DFS(int idx,int wf_num){
+	if(idx==0||wf_num==M){
+		if(wf_num==M){
+			if(judge(st)==false)
+				return;
+			for(set<int>::reverse_iterator it=st.rbegin();it!=st.rend();it++)
+				printf("%s%d",it==st.rbegin()?"":" ",*it);
+			exit(0);
+		}
+		return;
+	}
+	st.insert(idx);
+	DFS(idx-1,wf_num+1);		//选 
+	st.erase(idx);
+	DFS(idx-1,wf_num);		//不选 
+}
+int main() {
+	scanf("%d%d%d",&N,&M,&L);
+	A.resize(N+1);
+	for(int i=1;i<=N;i++)
+		scanf("%d",&A[i]);
+	DFS(N,0); 
+	puts("No Solution");
+	return 0; 
+}
+/*
+5 2 2
+-2
++3
+-4
++5
++4
+
+6 2 3
+-2
++3
+-4
++5
++4
+-3
+
+6 2 5
+-2
++3
+-4
++5
++4
++6
+*/

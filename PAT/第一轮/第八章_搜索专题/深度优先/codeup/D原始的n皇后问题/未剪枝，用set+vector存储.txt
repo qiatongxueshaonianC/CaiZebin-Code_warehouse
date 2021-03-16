@@ -1,0 +1,49 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int maxn=12;
+int n;
+set<vector<int> > ans;
+vector<int> temp;
+bool harsh[maxn];
+bool AC(vector<int> a){
+	for(int i=0;i<a.size();i++){
+		for(int j=i+1;j<n;j++){
+			if(abs(j-i)==abs(a[i]-a[j])) return false;
+		}
+	}
+	return true;
+}
+void DFS(int now){
+	if(now==n&&AC(temp)){
+		ans.insert(temp);
+		return;
+	}
+	for(int i=1;i<=n;i++){
+		if(harsh[i]==false){
+			temp.push_back(i);
+			harsh[i]=true;
+			DFS(now+1);
+			temp.pop_back();
+			harsh[i]=false;
+		}
+	}
+}
+int main() {
+	scanf("%d",&n);
+	DFS(0); 
+	if(!ans.size()){
+		puts("no solute!");
+		return 0;
+	}
+	for(auto i:ans){
+		for(auto k:i){
+			printf("%d",k);
+			if(k!=*(i.end()-1)) printf(" ");
+		}
+		puts("");
+	}
+	return 0;
+}
+/*
+4
+*/

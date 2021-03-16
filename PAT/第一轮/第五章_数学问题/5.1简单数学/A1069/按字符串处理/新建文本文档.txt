@@ -1,0 +1,35 @@
+#include<bits/stdc++.h>
+using namespace std; 
+bool cmp(char a,char b){
+	return a>b;
+}
+int main() {
+	string s1,s2,pre="100000";
+	getline(cin,s1);
+	if(s1.size()<4){
+		for(int i=s1.size();i<4;i++){
+			s1="0"+s1;
+		}
+	}
+	while(s1!=s2){
+		sort(s1.begin(),s1.end(),cmp);
+		s2=s1;
+		sort(s2.begin(),s2.end());
+		int num=stoi(s1)-stoi(s2);
+		if(stoi(pre)==num) 
+			break;
+		printf("%s - %s = %04d\n",s1.c_str(),s2.c_str(),num);
+		pre=to_string(num);
+		if(pre.size()<4){
+			for(int i=pre.size();i<4;i++){
+				pre="0"+pre;
+			}
+		}
+		s1=pre;
+	}
+	return 0;
+}
+/*
+6767
+1221
+*/

@@ -1,0 +1,114 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int inf=0x3fffffff;
+const int maxn=101;
+vector<pair<pair<int,int>,int>> G[maxn];
+int n,m,st,ed,N,d[maxn],range[maxn][maxn],num_range; 
+unordered_map<int,int> mp,mm;
+vector<int> pre[maxn],temp,ans;
+bool vis[maxn];
+void Dijkstra(int s){
+	fill(vis,vis+maxn,false);
+	fill(d,d+maxn,inf);
+	d[s]=0;
+	while(!vis[ed]){
+		int u=-1,min=inf;
+		for(int i=0;i<=N;i++){
+			if(vis[i]==false&&d[i]<min){
+				min=d[i];
+				u=i;
+			}
+		}
+		if(u==-1) return;
+		vis[u]=1;
+		for(auto i:G[u]){
+			int v=i.first.second,dis=1;
+			if(vis[v]==false){
+				if(d[u]+1<d[v]){
+					d[v]=d[u]+1;
+					pre[v].clear();
+					pre[v].push_back(u);
+					range[u][v]=i.second;
+				}else if(d[u]+1==d[v]){
+					pre[v].push_back(u);
+					range[u][v]=i.second;
+				}
+			}
+		}
+	}
+}
+void DFS(int s){
+	if(s==st){
+		temp.push_back(s);
+		unordered_set<int> st;
+		for(auto i=temp.size()-1;i>0;i--){
+			int u=temp[i],v=temp[i-1];
+			st.insert(range[u][v]);
+		}
+		if(st.size()<num_range){
+			ans=temp;
+			num_range=st.size();
+		}	
+		temp.pop_back();
+		return;	
+	}
+	temp.push_back(s);
+	for(auto i:pre[s])
+		DFS(i);
+	temp.pop_back();
+}
+void output(){
+	int st=ans[ans.size()-1],ed,r=range[ans[ans.size()-1]][ans[ans.size()-2]];
+	for(int i=ans.size()-1;i>0;i--){
+		int u=ans[i],v=ans[i-1];
+		if(range[u][v]!=r){
+			printf("Take Line#r from %d to %d.\n",mp[st],mp[u]);
+			r=range[u][v];
+			st=u;
+		}
+	}
+	printf("Take Line#r from %d to %d.\n",mp[st],mp[ans[0]]);
+}
+int main() {
+	int T,index=0,u,v;
+	scanf("%d",&T);
+	for(int i=1;i<=T;i++){
+		scanf("%d",&n);
+		N+=n;
+		vector<int> A(n+1);
+		for(int j=0;j<n;j++){
+			scanf("%d",&A[j]);
+			if(mp.find(A[j])==mp.end()) {
+				mp[index]=A[j];
+				mm[A[j]]=index++;
+			}
+		}
+		for(int j=0;j<n;j++){
+			int u=mm[A[j]],v=mm[A[j+1]];
+			G[u].push_back({{u,v},i});
+			G[v].push_back({{v,u},i});
+		}
+	}
+	scanf("%d",&m);
+	while(m--){
+		scanf("%d%d",&u,&v);
+		st=mm[u];ed=mm[v];num_range=inf;
+		Dijkstra(st);
+		DFS(ed);
+		printf("%d\n",ans.size()-1);
+		output();
+		ans.clear();
+	}
+	return 0;
+}
+/*
+4
+7 1001 3212 1003 1204 1005 1306 7797
+9 9988 2333 1204 2006 2005 2004 2003 2302 2001
+13 3011 3812 3013 3001 1306 3003 2333 3066 3212 3008 2302 3010 3011
+4 6666 8432 4011 1306
+3
+3011 3013
+6666 2001
+2004 3001
+*/

@@ -1,0 +1,86 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int maxn=30;
+struct Node{
+	string data;
+	int left,right;
+	Node(string a,int b,int c){
+		data=a;
+		left=b;right=c;
+	}
+	Node(){}
+};
+int n; 
+vector<Node> Tree;
+bool harsh[maxn];
+string operat="";
+//string operat="+-*/%";
+vector<string> st;
+void preOrder(int root){
+	if(root==-1) return;
+	st.push_back(Tree[root].data);
+	if(Tree[root].left!=-1||Tree[root].right!=-1) operat+=Tree[root].data;
+	inOrder(Tree[root].left);
+	inOrder(Tree[root].right);
+}
+void cal(){
+	string s1,s2,op,opp;
+	while(st.size()>1){
+		s2=st.back();st.pop_back();
+		s1=st.back();st.pop_back();
+		if(operat.find(s1)==string::npos){
+			op=st.back();st.pop_back();
+			if(operat.find(op)!=string::npos){
+				s1='('+s1+op+s2+')';
+				st.push_back(s1);
+			}else{
+				opp=st.back();st.pop_back();
+				op='('+op+opp+s1+')';
+				st.push_back(op);
+				st.push_back(s2); 
+			}
+		}else{
+			s2='('+s1+s2+')';
+			st.push_back(s2);
+		}
+	}
+}
+int main() {
+	scanf("%d",&n);
+	Tree.resize(n+1);
+	string s;
+	int u,v,root=1;
+	for(int i=1;i<=n;i++){
+		cin>>s>>u>>v;
+		harsh[u]=harsh[v]=true;
+		Tree[i]=Node(s,u,v);
+	}
+	while(harsh[root]) root++;
+	preOrder(root);
+	cal();
+	s=st.back();
+	s.erase(s.begin());s.erase(--s.end());
+	puts(s.c_str());
+	return 0;
+}
+/*
+8
+* 8 7
+a -1 -1
+* 4 1
++ 2 5
+b -1 -1
+d -1 -1
+- -1 6
+c -1 -1
+
+8
+2.35 -1 -1
+* 6 1
+- -1 4
+% 7 8
++ 2 3
+a -1 -1
+str -1 -1
+871 -1 -1
+*/

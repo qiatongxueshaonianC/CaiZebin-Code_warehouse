@@ -1,0 +1,55 @@
+#include<bits/stdc++.h>
+using namespace std; 
+int main() {
+	int n;
+	scanf("%d",&n);
+	vector<int> value(n+1),L(n+1),left(n),right(n);
+	for(int i=1;i<=n;i++)
+		scanf("%d",&value[i]);
+	for(int i=0;i<n;i++)
+		scanf("%d",&L[i]);
+	vector<pair<unordered_set<int>,int>> dp(n);
+	unordered_set<int> st;st.insert(L[0]);
+	dp[0]=make_pair(st,value[L[0]]);
+	left[0]=0;right[0]=0;
+	for(int i=1;i<n;i++){
+		unordered_set<int> pre=dp[i-1].first;
+		int v=dp[i-1].second;
+		if(pre.find(L[i])==pre.end()){
+			pre.insert(L[i]);
+			dp[i]=make_pair(pre,v+value[L[i]]);
+			left[i]=left[i-1];
+			right[i]=right[i-1]+1;
+		}else{
+			int j=i;
+			st.clear();st.insert(L[j]);
+			v=value[L[j--]];
+			while(L[j]!=L[i]){
+				st.insert(L[j]);
+				v+=value[L[j--]];
+			}
+			dp[i]=make_pair(st,v);
+			left[i]=j+1;
+			right[i]=i;
+		}
+	}
+	int idx=0,len=0,v=0;
+	for(int i=0;i<n;i++){
+		if(dp[i].first.size()>len){
+			idx=i;
+			len=dp[i].first.size();
+			v=dp[i].second;
+		}else if(dp[i].first.size()==len&&dp[i].second>v){
+			idx=i;
+			len=dp[i].first.size();
+			v=dp[i].second;
+		}
+	}
+	printf("%d %d %d",dp[idx].second,left[idx],right[idx]);
+	return 0;
+}
+/*
+8
+18 20 2 97 23 12 8 5
+3 3 5 8 1 5 2 1
+*/

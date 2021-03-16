@@ -1,0 +1,80 @@
+#pragma warning(disable:4996)
+#include<bits/stdc++.h>
+using namespace std;
+const int maxn = 110;
+struct Node {
+	int data, color;
+	Node *left, *right;
+};
+int N,k,RT;
+vector<int> Post, In;
+int dp[maxn][5][5];
+map<Node*, int> mp;
+Node* create(int Inl, int Inr, int Postl, int Postr) {
+	if(Inl > Inr)
+		return NULL;
+	Node* now = new Node;
+	mp.insert(make_pair(now, mp.size));
+	now->data = Post[Postr];
+	int k=Inl;
+	for (; k <= Inr; k++) {
+		if (In[k] == now->data)
+			break;
+	}
+	int numleft = k - 1;
+	now->left = create(Inl, numleft, Postl, Postl + numleft - 1);
+	now->right = create(k + 1, Inr, Postl + numleft, Postr - 1);
+	return now;
+}
+void DFS(Node* root) {
+	if (root->color == 2) {
+		if (dp[mp[root]][1][1] != -1)
+			return dp[mp[root]][1][1];
+		root->left->color = root->right->color = 1;
+		dp[mp[root]][1][1] = (DFS(root->left) && DFS(root->right));
+		return dp[mp[root]][1][1];
+	}
+	else {
+		for (int i = 1; i <= 2; i++) {
+			root->left->color =i;
+			for (int j = 1; j <= 2; j++) {
+				root->right->color = j;
+				if (dp[mp[root]][i][j] != -1)
+					return dp[mp[root]][i][j];
+				dp[mp[root]][i][j] = (DFS(root->left) && DFS(root->right));
+			}
+		}
+		return dp[mp[root]][1][1]|| dp[mp[root]][1][2] || dp[mp[root]][2][1] || dp[mp[root]][2][2]  ;
+	}
+int main() {
+	scanf("%d", &k);
+	while (k--) {
+		memset(dp, -1, sizeof(dp));
+		scanf("%d", &N);
+		Post.resize(N);
+		for (int i = 0; i < N; i++) {
+			scanf("%d", &Post[i]);
+		}
+		In = Post;
+		sort(In.begin(), In.end());
+		Node* root = create(0, N - 1, 0, N - 1);
+		RT = root->data;
+		root->color = 1;		//1代表黑，2代表红
+		if (DFS(root)) {
+			puts("Yes");
+		}
+		else {
+			puts("No");
+		}
+	}
+	return 0;
+}
+/*
+3
+3 11 2
+-5 -12 3
+-2 1000 7
+
+2
+
+*/

@@ -1,0 +1,43 @@
+#pragma warning(disable:4996)
+#include<bits/stdc++.h>
+using namespace std;
+class Solution {
+public:
+	int maxArea(vector<int>& height) {
+		vector<pair<int, int>> mp(height.size());
+		vector<int> left_min(height.size(),INT_MAX), right_max(height.size(),INT_MIN);
+		for (int i = 0; i < height.size(); i++) {
+			mp[i].first=height[i];
+			mp[i].second = i;
+		}
+		sort(mp.begin(), mp.end());
+		left_min[mp.size() - 1] = mp[mp.size() - 1].second;
+		right_max[mp.size() - 1] = mp[mp.size() - 1].second;
+		for (int i = mp.size() - 2; i >= 0; i--) {
+			left_min[i] = min(mp[i].second, left_min[i + 1]);
+			right_max[i] = max(mp[i].second, right_max[i + 1]);
+		}
+		int best = 0;
+		for (int i = 0; i < mp.size(); i++) {
+			best = max(best, (right_max[i]-left_min[i])*mp[i].first);
+		}
+		return best;
+	}
+};
+int main() {
+	int n;
+	cin >> n;
+	vector<int> V; V.resize(n);
+	for (int i = 0; i < n; i++)
+		scanf("%d", &V[i]);
+	Solution A;
+	cout << A.maxArea(V);
+	return 0;
+}
+/*
+9
+1 8 6 2 5 4 8 3 7
+*/
+
+
+

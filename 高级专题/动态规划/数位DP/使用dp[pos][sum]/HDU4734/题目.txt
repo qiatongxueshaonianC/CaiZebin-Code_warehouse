@@ -1,0 +1,15 @@
+For a decimal number x with n digits (A nA n-1A n-2 ... A 2A 1), we define its weight as F(x) = A n * 2 n-1 + A n-1 * 2 n-2 + ... + A 2 * 2 + A 1 * 1. Now you are given two numbers A and B, please calculate how many numbers are there between 0 and B, inclusive, whose weight is no more than F(A).
+Input
+The first line has a number T (T <= 10000) , indicating the number of test cases. 
+For each test case, there are two numbers A and B (0 <= A,B < 10 9)
+Output
+For every case,you should output "Case #t: " at first, without quotes. The t is the case number starting from 1. Then output the answer.
+Sample Input
+3
+0 100
+1 10
+5 100
+Sample Output
+Case #1: 1
+Case #2: 2
+Case #3: 13

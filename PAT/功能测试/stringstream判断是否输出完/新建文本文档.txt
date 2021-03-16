@@ -1,0 +1,14 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main() {
+	string s="div div p";
+	stringstream S(s);
+	while(S>>s){
+		puts(s.c_str());
+		if(!S.eof())
+			puts("YES");
+		else
+			puts("NO");
+	}
+	return 0;
+}

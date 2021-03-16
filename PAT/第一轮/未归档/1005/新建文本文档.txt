@@ -1,0 +1,23 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+	int ans;
+	string s,trans[10]={"zero","one","two","three","four","five","six","seven","eight","nine"};
+    cin>>s;
+    while(s.size()){
+    	ans+=s[0]-'0';
+    	s.erase(0,1);
+	}
+	s=to_string(ans);
+	while(s.size()){
+		ans=s[0]-'0';
+		printf("%s",trans[ans].c_str());
+		s.erase(s.begin());
+		if(!s.empty()) printf(" ");
+	}
+    return 0;
+}
+/*
+12345
+9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999
+*/

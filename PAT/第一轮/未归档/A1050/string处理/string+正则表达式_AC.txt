@@ -1,0 +1,32 @@
+#include<bits/stdc++.h>
+using namespace std;
+string s1,s2; 
+vector<pair<regex,string>>trans;
+bool harsh[256];
+int main() {
+	getline(cin,s1);
+	getline(cin,s2);
+	//cin>>s2;
+	for(auto i:s2){
+		int j=0; 
+		if(harsh[i]==false){
+			int k=s1.find(i,j);
+			while(k!=string::npos){
+				s1[k]='`';
+				j=k+1;
+				k=s1.find(i,j);
+			}
+			harsh[i]=true;
+		}
+	}
+	s1=regex_replace(s1,regex("`"),"");
+	puts(s1.c_str());
+	return 0;
+}
+/*
+They are students.
+aeiou
+
+ab c
+ab
+*/

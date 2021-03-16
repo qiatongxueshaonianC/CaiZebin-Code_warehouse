@@ -1,0 +1,179 @@
+#pragma warning(disable:4996)
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<string>
+#include<algorithm>
+#include<cmath>
+#include<climits>
+#include<numeric>
+#include<vector>
+#include<map>
+#include<set>
+#include<queue>
+#include<list>
+#include<bitset>
+#define lowbit(x)x&(-x)
+using namespace std;
+typedef long long ll;
+struct bigInteger {
+	static const int Base = 10;
+	static const int width = 1;
+	int digit[1010];
+	int size = 0;
+	void init() {
+		memset(digit, 0, sizeof(digit));
+		size = 0;
+	}
+	void set(int x) {
+		init();
+		do {
+			digit[size++] = x % Base;
+			x /= Base;
+		} while (x != 0);
+	}
+	void set(string s) {
+		init();
+		int len = (s.size() - 1) / width + 1;
+		int x;
+		for (int i = 0; i < len; i++) {
+			int ed = s.size() - i * width;
+			int st = max(0, ed - width);
+			sscanf(s.substr(st, ed - st).c_str(), "%d", &x);
+			digit[size++] = x;
+		}
+	}
+	void output() {
+		for (int i = 499; i >= 0; i--)
+				printf("%d", digit[i]);
+		puts("");
+	}
+	bigInteger operator *(const bigInteger& b)const {
+		bigInteger ret;
+		ret.init();
+		int up = max(size, b.size);
+		for (int t = 0; t < up; t++) {
+			for (int i = 0; i < up; i++) {
+				ret.digit[t + i] += digit[t] * b.digit[i];
+				ret.digit[t + i + 1] += ret.digit[t + i] / Base;
+				ret.digit[t + i] = ret.digit[t + i] % Base;
+			}
+		}
+		ret.size = up + up;
+		while (ret.size > 1 && ret.digit[ret.size - 1] == 0)
+			ret.size--;
+		ret.deduction();
+		return ret;
+	}
+	bigInteger operator *(const int& b)const {
+		bigInteger ret;
+		ret.init();
+		int carry = 0;
+		for (int i = 0; i < size; i++) {
+			carry = carry + digit[i] * b;
+			ret.digit[ret.size++] = carry % Base;
+			carry /= Base;
+		}
+		while (carry != 0) {
+			ret.digit[ret.size++] = carry % Base;
+			carry /= Base;
+		}
+		ret.deduction();
+		return ret;
+	}
+	bigInteger operator +(const bigInteger& b)const {
+		bigInteger ret;
+		ret.init();
+		int carry = 0;
+		for (int i = 0; i < size || i < b.size; i++) {
+			carry = carry + digit[i] + b.digit[i];
+			ret.digit[ret.size++] = carry % Base;
+			carry /= Base;
+		}
+		if (carry != 0)
+			ret.digit[ret.size++] = carry;
+		ret.deduction();
+		return ret;
+	}
+	bigInteger operator /(const int& x)const {
+		bigInteger ret;
+		ret.init();
+		int remain = 0;
+		for (int i = size - 1; i >= 0; i--) {
+			remain = remain * Base + digit[i];
+			if (remain < x)
+				ret.digit[i] = 0;
+			else {
+				ret.digit[i] = remain / x;
+				remain %= x;
+			}
+		}
+		ret.size = size;
+		while (ret.size > 1 && ret.digit[ret.size - 1] == 0)
+			ret.size--;
+		ret.deduction();
+		return ret;
+	}
+	int operator % (const int& x)const {
+		int remain = 0;
+		for (int i = size - 1; i >= 0; i--) {
+			remain = remain * Base + digit[i];
+			remain %= x;
+		}
+		return remain;
+	}
+	bigInteger operator -(const bigInteger& b){
+		bigInteger ret;
+		ret.init();
+		int remain = 0;
+		for (int i = 0; i<size; i++) {
+			remain = remain + digit[i];
+			if (remain < b.digit[i]) {
+				remain += Base;
+				digit[i + 1]--;
+			}
+			ret.digit[i] = remain -b.digit[i];
+			remain = (remain - b.digit[i]) / Base;
+		}
+		ret.size = size;
+		while (ret.size > 1 && ret.digit[ret.size - 1] == 0)
+			ret.size--;
+		ret.deduction();
+		return ret;
+	}
+	void deduction() {
+		if (size > 500)
+			size = 500;
+	}
+};
+bigInteger binaryPow(bigInteger a, ll b) {
+	bigInteger ans; ans.set(1);
+	if (b==0)
+		return ans;
+	if (b&1)
+		return a * binaryPow(a, b - 1);
+	else {
+		ans = binaryPow(a, b / 2);
+		return ans * ans;
+	}
+}
+void Solve(ll n) {
+	printf("%lld\n", (ll)(n*log(2)/ log(10)) + 1);
+	bigInteger a,ans;
+	a.set(2);
+	ans = binaryPow(a, n);
+	a.set(1);
+	ans = ans - a;
+	ans.output();
+}
+int main() {
+	bigInteger A;
+	string s;
+	getline(cin, s);
+	A.set(s);
+	A.output();
+	long long N;
+	cin >> N;
+	Solve(N);
+	return 0;
+}

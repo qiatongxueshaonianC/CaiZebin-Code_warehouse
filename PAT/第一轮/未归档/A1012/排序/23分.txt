@@ -1,0 +1,99 @@
+#include<bits/stdc++.h>
+using namespace std; 
+struct Node{
+	int c,m,e,a;
+	string id;
+//	double a;
+	set<pair<int,char>> rank;
+	Node(string s,int x,int y,int z){
+		id=s;
+		c=x;m=y,e=z;a=(x+y+z)/3;
+	}
+	Node(){	}
+};
+map<string,Node> mp;
+vector<Node> vct;
+int n,m;
+bool cmp1(Node u,Node v){
+	return u.a>v.a; 
+}
+bool cmp2(Node u,Node v){
+	return u.c>v.c; 
+}
+bool cmp3(Node u,Node v){
+	return u.m>v.m; 
+}
+bool cmp4(Node u,Node v){
+	return u.e>v.e; 
+}
+int main() {
+	cin>>n>>m;
+	string id;
+	int u,v,w;
+	for(int i=0;i<n;i++){
+		cin>>id>>u>>v>>w;
+		Node node(id,u,v,w);
+		mp.insert({id,node});
+		vct.push_back(node);
+	}
+	sort(vct.begin(),vct.end(),cmp1);
+	int index=1;
+	mp[vct[0].id].rank.insert({index,'A'});
+	for(int i=1;i<vct.size();i++){
+		if(vct[i].a==vct[i-1].a)
+			mp[vct[i].id].rank.insert({index,'A'});
+		else mp[vct[i].id].rank.insert({++index,'A'});
+	}
+	sort(vct.begin(),vct.end(),cmp2);
+	index=1;
+	mp[vct[0].id].rank.insert({index,'C'});
+	for(int i=1;i<vct.size();i++){
+		if(vct[i].c==vct[i-1].c)
+			mp[vct[i].id].rank.insert({index,'C'});
+		else mp[vct[i].id].rank.insert({++index,'C'});
+	}
+	sort(vct.begin(),vct.end(),cmp3);
+	index=1;
+	mp[vct[0].id].rank.insert({index,'M'});
+	for(int i=1;i<vct.size();i++){
+		if(vct[i].m==vct[i-1].m)
+			mp[vct[i].id].rank.insert({index,'M'});
+		else mp[vct[i].id].rank.insert({++index,'M'});
+	}
+	sort(vct.begin(),vct.end(),cmp4);
+	index=1;
+	mp[vct[0].id].rank.insert({index,'E'});
+	for(int i=1;i<vct.size();i++){
+		if(vct[i].e==vct[i-1].e)
+			mp[vct[i].id].rank.insert({index,'E'});
+		else mp[vct[i].id].rank.insert({++index,'E'});
+	}
+	for(int i=0;i<m;i++){
+		cin>>id;
+		if(mp.find(id)==mp.end()){
+			puts("N/A");
+			continue;
+		}
+		if(mp[id].rank.begin()->first==(++mp[id].rank.begin())->first){
+			if(mp[id].rank.begin()->second=='E'&&(++mp[id].rank.begin())->second=='M'){
+				printf("%d %c\n",mp[id].rank.begin()->first,'M');
+			}else printf("%d %c\n",mp[id].rank.begin()->first,mp[id].rank.begin()->second);
+		}else 
+		printf("%d %c\n",mp[id].rank.begin()->first,mp[id].rank.begin()->second);
+	}
+	return 0;
+}
+/*
+5 6
+310101 98 85 88
+310102 70 95 88
+310103 82 87 94
+310104 91 91 91
+310105 85 90 90
+310101
+310102
+310103
+310104
+310105
+999999
+*/

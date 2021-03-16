@@ -1,0 +1,43 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main() {
+	int N;
+	scanf("%d",&N);
+	vector<int> A(N);
+	for(int i=0;i<N;i++)
+		scanf("%d",&A[i]);
+	sort(A.begin(),A.end(),greater<int>());
+	int n=(int)sqrt(1.0*N);
+	int m=N/n,idx=0;
+	vector<vector<int>> G(n);
+	fill(G.begin(),G.end(),vector<int>(n,-INT_MAX));
+	int i=0,j=0;
+	while(idx<A.size()){
+		while(j<n&&G[i][j]==-INT_MAX){
+			G[i][j++]=A[idx++];
+		};
+		for(auto k:G[i])
+			printf("%d ",k);
+		j--;i++;
+		while(i<m&&G[i][j]==-INT_MAX){
+			G[i++][j]=A[idx];
+			idx=idx+1;
+		}
+		i--;j--;
+		while(j>=0&&G[i][j]==-INT_MAX)
+			G[i][j--]=A[idx++];
+		j++;i--;
+		while(i>=0&&G[i][j]==-INT_MAX)
+			G[i--][j]=A[idx++];
+		i++;j++;
+	}
+	for(auto I:G){
+		for(int j=0;j<I.size();j++)
+			printf("%d%s",I[j],j==I.size()-1?"\n":" ");
+	}
+	return 0; 
+}
+/*
+12
+37 76 20 98 76 42 53 95 60 81 58 93
+*/

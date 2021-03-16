@@ -1,0 +1,36 @@
+#include<bits/stdc++.h>
+using namespace std; 
+const int maxn=110;
+const int inf=0x3fffffff;
+int N,sum[maxn],dp[maxn][maxn],f[maxn][maxn],g[maxn][maxn],A[maxn];
+#define c(i,j) (sum[j]-sum[i-1])
+int main() {
+	while(~scanf("%d",&N)&&N!=0){
+		for(int i=1;i<=N;i++){
+			scanf("%d",&A[i]);
+			sum[i]=sum[i-1]+A[i];
+		}
+		for(int i=1;i<=N;i++)
+			f[i][i]=g[i][i]=dp[i][i]=A[i];
+		for(int len=1;len<=N;len++){
+			for(int i=1;i+len<=N+1;i++){
+				int j=i+len-1;
+				int m=0;
+				m=min(m,f[i+1][j]);
+				m=min(m,g[i][j-1]);
+				dp[i][j]=sum[j]-sum[i-1]-m;
+				f[i][j]=min(dp[i][j],f[i+1][j]);
+				g[i][j]=min(dp[i][j],g[i][j-1]);
+		}
+	} 
+		printf("%d\n",2*dp[1][N]-sum[N]);
+	}
+	return 0;
+}
+/*
+4
+4 -10 -20 7
+4
+1 2 3 4
+0
+*/

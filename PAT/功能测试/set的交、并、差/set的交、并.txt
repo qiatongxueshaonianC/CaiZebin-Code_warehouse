@@ -1,0 +1,36 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main()
+{
+	set<int> srcPart;
+	set<int> dstPart;
+	
+	srcPart.insert(1);
+	srcPart.insert(2);
+	srcPart.insert(3);
+	srcPart.insert(4);
+	srcPart.insert(5);
+	
+	dstPart.insert(3);
+	dstPart.insert(4);
+	dstPart.insert(5);
+	dstPart.insert(6);
+	dstPart.insert(7);
+	
+	set<int> intersection;
+	set<int> convergence;
+	set_intersection(srcPart.begin(), srcPart.end(), dstPart.begin(), dstPart.end(), inserter(intersection, intersection.begin()));
+	set_union(srcPart.begin(), srcPart.end(), dstPart.begin(), dstPart.end(), inserter(convergence, convergence.begin()));
+	
+	set<int>::iterator iter;
+	for(iter = intersection.begin(); iter != intersection.end(); iter++){
+		cout << *iter << " ";
+	}
+	cout << endl;
+	for(iter = convergence.begin(); iter != convergence.end(); iter++){
+		cout << *iter << " ";
+	}
+	
+	return 0;
+}

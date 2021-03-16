@@ -1,0 +1,46 @@
+#include <iostream>
+#include<cstdio>
+#include<cstring>
+#include<string>
+#include<sstream>
+#include<algorithm>
+#include<cmath>
+#include<climits>
+#include<numeric>
+#include<vector>
+#include<map>
+#include<set>
+#include<queue>
+#include<iterator>
+using namespace std;
+int T; 
+string s;
+int main() {
+    std::ios::sync_with_stdio(false);
+	while(getline(cin,s)&&s!="."){
+		string s1="";
+		for(int i=0;i<s.size();i++){
+			int ans=0,pos;
+			s1+=s[i];
+		//	cout<<s1<<'\n';
+			int len=s1.size();
+			int k=s.find(s1,0);
+			while(k!=string::npos){
+				ans++;
+				pos=k+len;
+				k=s.find(s1,pos);
+			}
+			if(pos==s.size()){
+				cout<<ans<<'\n';
+				break;
+			}
+		}
+	} 
+	return 0;
+}
+/*
+abcd
+aaaa
+ababab
+.
+*/

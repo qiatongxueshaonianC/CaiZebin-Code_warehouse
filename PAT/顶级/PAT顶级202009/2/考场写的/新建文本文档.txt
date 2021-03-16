@@ -1,0 +1,33 @@
+#pragma warning(disable:4996)
+#include<bits/stdc++.h>
+using namespace std;
+int A, B, N,K,best=INT_MAX;
+void DFS(int num,int step) {
+	if (num == B) {
+		best = min(best, step);
+		return;
+	}
+	if (step >= best)
+		return;
+	if(!(B<0&&num>0))
+		DFS(num + 1, step + 1);
+	DFS(num*N, step + 1);
+	if(!(B>0&&num<0))
+		DFS(num - 1, step + 1);
+}
+int main() {
+	cin >> K;
+	while (K--) {
+		best = INT_MAX;
+		scanf("%d%d%d", &A, &B, &N);
+		DFS(A,0);
+		printf("%d\n", best);
+	}
+	return 0;
+}
+/*
+3
+3 11 2
+-5 -12 3
+-2 1000 7
+*/

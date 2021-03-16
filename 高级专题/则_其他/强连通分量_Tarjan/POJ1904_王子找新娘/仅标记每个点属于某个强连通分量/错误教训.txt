@@ -1,0 +1,77 @@
+/*解题思路：
+首先，题目已经给出了一种可行的方法作为已知，每一个女孩都唯一连有一条边到对应的王子；
+现在考虑：A王子本来的新娘被其B王子取走了，那么A王子需要一个新年作为替代，而B王子对应的
+原女孩现在正好空缺，（如果该女孩嫁给了C王子，那么C王子原来对应的女孩现在也是空缺）其他以此类推。 
+当这三对新人在同一个强连通分量内时，总是可以满足要求，每个王子都可以娶到一个女孩）*/ 
+#include<iostream>
+#include<cstdio>
+#include<stack>
+#include<vector>
+#include<set>
+#include<algorithm>
+using namespace std; 
+const int maxn=4010;
+vector<vector<int> >G(maxn),ans(maxn);
+int N,components[maxn],idx[maxn],lowidx[maxn],vis_num,_stack[maxn],top,components_cnt; 
+void Tarjan(int s){
+	idx[s]=lowidx[s]=++vis_num;
+	_stack[top++]=s;
+	for(int i=0;i<G[s].size();i++){
+		int v=G[s][i];
+		if(idx[v]==0){	//若这个点没访问过 
+			Tarjan(v);
+			lowidx[s]=min(lowidx[s],lowidx[v]);
+		}else if(components[v]==0){	//该点之前就已经访问过，并且属于当前的强连通分量 
+			lowidx[s]=min(lowidx[s],idx[v]); 
+		} 
+	}
+	if(idx[s]==lowidx[s]){	//以s为起点的一系列点属于一个强连通分量 
+		int t;
+		components_cnt++; 
+		vector<int> temp;
+		do{
+			t=_stack[--top];
+			if(t>N)
+				temp.push_back(t);	//2020/5/16/14:34发现，这么做是不对的！！！！！t不一定是s的邻接点！ 
+			components[t]=components_cnt;
+		}while(t!=s);
+		sort(temp.begin(),temp.end());
+		ans[components[s]]=temp;
+	}
+}
+int main() {
+	scanf("%d",&N);
+	for(int i=1;i<=N;i++){
+		int k,v;	
+		scanf("%d",&k);
+		while(k--){
+			scanf("%d",&v);
+			G[i].push_back(v+N);
+		}
+	}
+	for(int i=1;i<=N;i++){
+		int v;
+		scanf("%d",&v);
+		G[v+N].push_back(i);
+	}
+	for(int i=1;i<=N;i++){
+		if(idx[i]==0)
+			Tarjan(i);
+	}
+	for(int i=1;i<=N;i++){
+		int k=components[i];
+		printf("%d",ans[k].size());
+		for(int j=0;j<ans[k].size();j++)
+			printf(" %d",ans[k][j]-N);
+		puts("");
+	}
+	return 0;
+}
+/*
+4
+2 1 2
+2 1 2
+2 2 3
+2 3 4
+1 2 3 4
+*/

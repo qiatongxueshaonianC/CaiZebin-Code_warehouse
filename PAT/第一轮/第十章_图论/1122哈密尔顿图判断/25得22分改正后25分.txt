@@ -1,0 +1,57 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int maxn=210;
+vector<int> G[maxn],vct;
+set<int> st;
+int n,m,k; 
+bool judge(){
+	if(*vct.begin()!=*--vct.end()) return false;
+	if(st.size()!=vct.size()-1||st.size()!=n) return false;
+	//for(int i=0;i<vct.size()-2;i++){
+	for(int i=0;i<vct.size()-1;i++){  //¸ÄÕý
+		int u=vct[i],v=vct[i+1];
+		if(find(G[u].begin(),G[u].end(),v)==G[u].end()) return false;
+	}
+	return true;
+}
+int main() {
+	scanf("%d%d",&n,&m);
+	int u,v;
+	for(int i=0;i<m;i++){
+		scanf("%d%d",&u,&v);
+		G[u].push_back(v);
+		G[v].push_back(u);
+	}
+	scanf("%d",&k);
+	while(k--){
+		vct.clear();st.clear();
+		scanf("%d",&u);
+		while(u--){
+			scanf("%d",&v);
+			vct.push_back(v);
+			st.insert(v);
+		}
+		printf("%s\n",judge()?"YES":"NO");
+	}
+	return 0;
+}
+/*
+6 10
+6 2
+3 4
+1 5
+2 5
+3 1
+4 1
+1 6
+6 3
+1 2
+4 5
+6
+7 5 1 4 3 6 2 5
+6 5 1 4 3 6 2
+9 6 2 1 6 3 4 5 2 6
+4 1 2 5 1
+7 6 1 3 4 5 2 6
+7 6 1 2 5 4 3 1
+*/

@@ -1,0 +1,88 @@
+#include<bits/stdc++.h>
+using namespace std; 
+struct Node{
+	string id;
+	int score;
+	Node(string a,int b):id(a),score(b){}
+};
+bool cmp(Node a,Node b){
+	return a.score!=b.score?a.score>b.score:a.id<b.id;
+}
+unordered_map<int,pair<int,int>> site_sumscore;
+unordered_map<int,vector<int>> day_site;
+unordered_map<int,unordered_map<int,int>> day_site_people;  //记录某天某个考场的人数 
+unordered_map<char,vector<Node>> level_stu;
+int day;  //设为全局变量 
+bool cmp2(int u,int v){
+	if(day_site_people[day][u]!=day_site_people[day][v]) 
+	return  day_site_people[day][u]>day_site_people[day][v];
+	else return u<v;
+}
+int main() {
+	int n,m,score;
+	scanf("%d%d",&n,&m);
+	string s;
+	for(int i=0;i<n;i++){
+		cin>>s>>score;
+		int site=stoi(s.substr(1,3));
+		int day=stoi(s.substr(4,6));
+		level_stu[s[0]].push_back(Node(s,score));
+		site_sumscore[site].first++;
+		site_sumscore[site].second+=score;
+		day_site[day].push_back(site);
+		day_site_people[day][site]++;
+	}
+/*	sort(level_stu['A'].begin(),level_stu['A'].end(),cmp);
+	sort(level_stu['B'].begin(),level_stu['B'].end(),cmp);
+	sort(level_stu['T'].begin(),level_stu['T'].end(),cmp);*/
+	for(int i=1;i<=m;i++){
+		int type;
+		string s;
+		cin>>type>>s;
+		printf("Case %d: %d %s\n",i,type,s.c_str());
+		if(type==1){
+			char lev=s[0];
+			if(level_stu.find(lev)==level_stu.end()){
+				puts("NA");
+				continue;
+			}
+			sort(level_stu[s[0]].begin(),level_stu[s[0]].end(),cmp);
+			for(auto i:level_stu[s[0]])
+				printf("%s %d\n",i.id.c_str(),i.score);
+		}else if(type==2){
+			int site=stoi(s);
+			if(site_sumscore.find(site)==site_sumscore.end()){
+				puts("NA");
+				continue;
+			}
+			printf("%d %d\n",site_sumscore[site].first,site_sumscore[site].second);
+		}else{
+			day=stoi(s);
+			if(day_site.find(day)==day_site.end()){
+				puts("NA");
+				continue;
+			}
+			sort(day_site[day].begin(),day_site[day].end(),cmp2);
+			auto it=unique(day_site[day].begin(),day_site[day].end());
+			day_site[day].erase(it,day_site[day].end());
+			for(auto i:day_site[day])
+				printf("%d %d\n",i,day_site_people[day][i]);
+		}
+	}
+	return 0;
+}
+/*
+8 4
+B123180908127 99
+B102180908003 86
+A112180318002 98
+T107150310127 62
+A107180908108 100
+T123180908010 78
+B112160918035 88
+A107180908021 98
+1 A
+2 107
+3 180908
+2 999
+*/

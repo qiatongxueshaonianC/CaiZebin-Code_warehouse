@@ -1,0 +1,108 @@
+#include<iostream>
+#include<vector>
+#include<cstdio>
+#include<cstring>
+#include<map>
+using namespace std; 
+const int maxn=210;
+vector<vector<int> >G(maxn);
+map<string,int> mp;
+int N,dp[maxn][2];
+bool vis[maxn][2],unique[maxn][2]; 
+void init(){
+	mp.clear();
+	fill(G.begin(),G.end(),vector<int>());
+	memset(vis,false,sizeof(vis));
+	memset(unique,true,sizeof(unique));
+}
+int DP(int now,bool now_go,int father){
+	if(vis[now][now_go])
+		return dp[now][now_go];
+	vis[now][now_go]=true;
+	int ans1=0,ans2=0;
+	if(!now_go){
+		for(auto i:G[now]){		//当前节点不去 
+			if(i==father)
+				continue;
+			ans1+=DP(i,false,now);		//子节点可去可不去 
+			ans2+=DP(i,true,now);
+		}
+		for(auto i:G[now]){
+			if(i==father)
+				continue;
+			if(dp[i][0]==dp[i][1]){
+				unique[now][now_go]=false;
+				break;
+			}
+			if(dp[i][0]>dp[i][1]&&unique[i][0]==false){
+				unique[now][now_go]=false;
+				break;
+			}
+			if(dp[i][0]<dp[i][1]&&unique[i][1]==false){
+				unique[now][now_go]=false;
+				break;
+			}
+		}
+	}
+	else{	//当前去 
+		ans1=ans2=1;
+		for(auto i:G[now]){
+			if(i==father)
+				continue;
+			ans1+=DP(i,false,now);
+		} 
+		for(auto i:G[now]){
+			if(i==father)
+				continue;
+			if(unique[i][0]==false){
+				unique[now][now_go]=false;
+				break;
+			}
+		}
+	}
+	int ans=max(ans1,ans2); 
+	return	dp[now][now_go]=ans;
+}
+int main() {
+	std::ios::sync_with_stdio(false);
+	while(cin>>N&&N){
+		string s;
+		int cnt=1;
+		init(); 
+		cin>>s;mp[s]=cnt++;	//root标号为1
+		for(int i=0;i<N-1;i++){
+			string s1,s2;
+			cin>>s1>>s2;
+			if(mp.find(s1)==mp.end()){
+				mp[s1]=cnt++;
+			}
+			if(mp.find(s2)==mp.end())
+				mp[s2]=cnt++;
+			int u=mp[s1],v=mp[s2];
+		//	G[u].push_back(v);
+			G[v].push_back(u);
+		} 
+		int ans1=DP(1,0,-1);
+		int ans2=DP(1,1,-1);
+		if(ans1==ans2)
+			printf("%d No\n",ans1);
+		else if(ans1>ans2)
+			printf("%d %s\n",ans1,unique[1][0]?"Yes":"No");
+		else if(ans1<ans2)
+			printf("%d %s\n",ans2,unique[1][1]?"Yes":"No");
+	}
+	return 0;
+}
+/*
+6
+Jason
+Jack Jason
+Joe Jack
+Jill Jason
+John Jack
+Jim Jill
+2
+Ming
+Cho Ming
+0
+*/

@@ -1,0 +1,11 @@
+带有时间界限的01背包：
+dp[i][j]:表示前j天完成前i个任务中的若干个，使得效益值最大。
+
+过程理解：
+1：1<=j<A[i].need，j从1慢慢增大到第A[i]个任务所需要的完成时间A[i].need，这个过程dp[i][j]不断继承dp[i-1][j]
+2：A[i].need<=j<=A[i].deadline,此过程有两个选择："放和不放"，即dp[i][j]=max(dp[i-1][j],dp[i-1][j-A[i].need]+A[i].profit)；在放和不放中选一个大的
+3：A[i].deadline<j；这时候j天相对于前i个任务来说很充裕，在A[i].deadline~j这段时间内效益值不变（啥也干不了，因为前面的deadline之前的时间都
+     充分利用了，dp[i][A[i].deadline]的值已经是前i个作业所能获得的最大效益值）此时的dp[i][j]应该继承dp[i][A[i].deadline]的值
+
+注意！！：第三点是带有期限的01背包特有的，如果不这么写，只有第二点，那么当j很大时max(dp[i-1][j],dp[i-1][j-A[i].need]+A[i].profit)选的就是所有
+A[i].profit的和（想想看，有某个任务的deadline趋于无穷，此时j就可以趋于无穷，但是前面几个子任务直接的deadline是有要求的，这就没法满足）

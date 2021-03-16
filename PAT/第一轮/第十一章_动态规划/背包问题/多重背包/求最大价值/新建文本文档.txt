@@ -1,0 +1,40 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int maxn=101;
+const int maxc=1010;
+int n,m,dp[maxn][maxc],a[maxn],num,allnum; 
+int main() {
+	while(scanf("%d%d",&n,&m)&&n&&m){
+		allnum=0;
+		vector<int> w;
+		w.push_back(0);
+		set<int> ans;
+		for(int i=1;i<=n;i++)
+			scanf("%d",&a[i]);
+		for(int i=1;i<=n;i++){
+			scanf("%d",&num);
+			allnum+=num;
+			while(num--){
+				w.push_back(a[i]);
+			}
+		}
+		for(int i=1;i<=allnum;i++){
+			for(int v=w[i];v<=m;v++){
+				dp[i][v]=max(dp[i-1][v],dp[i-1][v-w[i]]+w[i]);
+				ans.insert(dp[i][v]);
+			}
+		}
+		for(auto i:ans)
+			printf("%d ",i);
+		puts("");
+		printf("%d\n",ans.size());
+	}
+	return 0;
+}
+/*
+3 10
+1 2 4 2 1 1
+2 5
+1 4 2 1
+0 0
+*/

@@ -1,0 +1,56 @@
+#include<bits/stdc++.h>
+using namespace std; 
+const int maxn=60;
+int n,inDegree[maxn];
+vector<int> G[maxn],ans;
+bool inq[maxn];
+bool TopoSort(){
+	int num=0;
+	stack<int> q;
+	for(int i=0;i<n;i++){
+		if(inDegree[i]==0) {
+			q.push(i);
+			inq[i]=true;
+		}
+	}
+	while(!q.empty()){
+		int u=q.top();q.pop();
+		ans.push_back(u);
+		num++;
+		for(auto i:G[u]){
+			inDegree[i]--;
+			if(inDegree[i]==0&&inq[i]==false) q.push(i);
+		}
+		G[u].clear();
+	}
+	if(num!=n) return false;
+	return true;
+}
+int main() {
+	scanf("%d",&n);
+	int edge;
+	for(int i=0;i<n;i++){
+		for(int j=0;j<n;j++){
+			scanf("%d",&edge);
+			if(edge!=0){
+				inDegree[j]++;
+				G[i].push_back(j);
+			}
+		}
+	}
+	if(TopoSort()){
+		for(auto i:ans){
+			printf("%d",i);
+			if(i!=*(ans.end()-1)) printf(" ");
+		}
+		puts("");
+	}else puts("ERROR");
+	return 0;
+}
+/*
+4
+0 1 0 0
+0 0 1 0
+0 0 0 0
+0 0 1 0
+*/

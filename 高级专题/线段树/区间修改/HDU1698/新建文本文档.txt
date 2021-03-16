@@ -1,0 +1,83 @@
+#include <iostream>
+#include<cstdio>
+#include<cstring>
+#include<string>
+#include<sstream>
+#include<algorithm>
+#include<cmath>
+#include<climits>
+#include<numeric>
+#include<vector>
+#include<map>
+#include<set>
+#include<queue>
+#include<list>
+#define lowbit(x) x&(-x)
+using namespace std; 
+const int maxn=100010;
+int T,N,Q,sum[maxn<<2],add[maxn<<2];
+void build(int rt,int L,int R){
+	if(L==R)
+		sum[rt]=1;
+	else{
+		int Mid=(L+R)/2;
+		build(rt*2,L,Mid);
+		build(rt*2+1,Mid+1,R);
+		sum[rt]=sum[rt*2]+sum[rt*2+1];
+	}
+}
+void pushDown(int rt,int len){
+	add[rt*2]=add[rt*2+1]=add[rt];
+	sum[rt*2]=(len-len/2)*add[rt];
+	sum[rt*2+1]=len/2*add[rt];
+	add[rt]=0;
+}
+void Set(int rt,int l,int r,int L,int R,int num){
+	if(L<=l&&r<=R){
+		add[rt]=num;
+		sum[rt]=(r-l+1)*num;
+	}
+	else{
+		if(add[rt])
+			pushDown(rt,r-l+1);
+		int Mid=(l+r)/2;
+		if(L<=Mid)
+			Set(rt*2,l,Mid,L,R,num);
+		if(R>Mid)
+			Set(rt*2+1,Mid+1,r,L,R,num);
+		sum[rt]=sum[rt*2]+sum[rt*2+1];
+	}
+}
+int query(int rt,int l,int r,int L,int R){
+	if(L<=l&&r<=R)
+		return sum[rt];
+	int Mid=(l+r)/2,temp=0;
+	if(add[rt])
+		pushDown(rt,r-l+1); 
+	if(L<=Mid)
+		temp+=query(rt*2,l,Mid,L,R);
+	if(R>Mid)
+		temp+=query(rt*2+1,Mid+1,r,L,R);
+	return temp;
+}
+int main() {
+	cin>>T;
+	for(int ii=1;ii<=T;ii++){
+		scanf("%d%d",&N,&Q);
+		build(1,1,N);
+		int L,R,v;
+		while(Q--){
+			scanf("%d%d%d",&L,&R,&v);
+			Set(1,1,N,L,R,v);
+		}
+		printf("Case %d: The total value of the hook is %d.\n",ii,sum[1]);
+	}
+	return 0;
+}
+/*
+1
+10
+2
+1 5 2
+5 9 3
+*/

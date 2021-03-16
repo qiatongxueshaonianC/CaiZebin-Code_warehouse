@@ -1,0 +1,37 @@
+#include<bits/stdc++.h>
+using namespace std; 
+int d[10],dp[10][10];
+int DFS(int pos,int pre,bool isLimit){
+/*	if(pos==-1)
+		if(isLimit)
+			return pre==1?1:0;
+		else return 0;
+	if(!isLimit&&dp[pos][pre]!=-1)
+		return dp[pos][pre];*/
+	int up=isLimit?d[pos]:9,ans=0;
+	for(int i=0;i<=up;i++){
+		if(!isLimit){
+			dp[pos][i]=DFS(pos-1,i,isLimit&&i==d[pos]);
+			if(i==1)
+				dp[pos][i]+=pow(10,pos);
+			ans=ans+dp[pos][i];
+		}else
+			ans+=DFS(pos-1,i,isLimit&&i==d[pos])+(pre==1?1:0);
+	}
+	return ans;
+}
+int Solve(int k){
+	int len=0;
+	while(k!=0){
+		d[len++]=k%10;
+		k/=10;
+	}
+	return DFS(len-1,0,true);
+}
+int main() {
+	int m;
+	scanf("%d",&m);
+	memset(dp,-1,sizeof(dp));
+	printf("%d",Solve(m));
+	return 0;
+}

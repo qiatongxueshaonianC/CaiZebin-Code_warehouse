@@ -1,0 +1,129 @@
+#include <cstdio>
+#include <cmath>
+#include <cstring>
+#include <set>
+#include <stack>
+#include <queue>
+#include <vector>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+#define ll long long
+#define INF 0x7FFFFFFF
+#define REP( i , n ) for ( int i = 0 ; i < n ; ++ i )
+#define FOR( i , a , b ) for ( int i = a ; i <= b ; ++ i )
+#define CLR( a , x ) memset ( a , x , sizeof (a) )
+#define RE freopen("1.in","r",stdin);
+#define WE freopen("1.out","w",stdout);
+const int maxn=100010;
+struct node
+{
+    int l,r;
+    int mid(){
+        return (l+r)>>1;
+    }
+}tree[maxn<<2];
+int sum[maxn<<2],add[maxn<<2];
+void pushUp(int i)
+{
+    sum[i]=sum[i<<1]|sum[i<<1|1];
+}
+void build(int i,int l,int r)
+{
+    tree[i].l=l,tree[i].r=r;
+    if(l==r)
+    {
+        sum[i]=1;
+        return;
+    }
+    int m=tree[i].mid();
+    build(i<<1,l,m);
+    build(i<<1|1,m+1,r);
+    pushUp(i);
+}
+void pushDown(int i)
+{
+    add[i<<1]=add[i<<1|1]=add[i];
+    sum[i<<1]=sum[i<<1|1]=1<<(add[i]-1);
+    add[i]=0;
+}
+void update(int i,int l,int r,int num)
+{
+    if(tree[i].l<=l&&tree[i].r<=r)
+    {
+        add[i]=num;
+        sum[i]=(1<<(num-1));            //将第num为设置为1
+        return;
+    }
+    if(add[i])
+        pushDown(i);
+    int m=tree[i].mid();
+    if(l<=m)
+        update(i<<1,l,r,num);
+    if(m<r)
+        update(i<<1|1,l,r,num);
+    pushUp(i);
+}
+ 
+int query(int i,int l,int r)
+{
+    if(tree[i].l==l&&tree[i].r==r)
+        return sum[i];
+    if(add[i])
+        pushDown(i);
+    int m=tree[i].mid();
+    if(l<=m)
+        query(i<<1,l,r);
+    if(m<r)
+        query(i<<1|1,l,r);
+    pushUp(i);
+        return query(i<<1,l,m)|query(i<<1|1,m+1,r);
+}
+int calc(int x)         //计算x有多少位1
+{
+    int num = 0;
+    while(x)
+    {
+        num += x&1;
+        x>>=1;
+    }
+    return num;
+}
+int main()
+{
+  //  RE;
+    int t,n,q,a,b,c,x,y,z,op;
+    char s1[5];
+    char ch;
+    while(scanf("%d%d%d",&n,&t,&op)!=EOF)
+    {
+        build(1,1,n);
+        getchar();
+        while(op--)
+        {
+            scanf("%c",&ch);
+            if(ch=='C')
+            {
+                scanf("%d%d%d%*c",&x,&y,&z);
+                if(x>y)
+                    swap(x,y);
+                update(1,x,y,z);
+            }else if(ch=='P')
+            {
+                scanf("%d%d%*c",&x,&y);
+                if(x>y)
+                    swap(x,y);
+                int tmp = query(1,x,y);
+                printf("%d\n",calc(tmp));
+            }
+        }
+    }
+    return 0;
+}
+/*
+2 2 4
+C 1 1 2
+P 1 2
+C 2 2 2
+P 1 2
+*/

@@ -1,0 +1,21 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main() {
+	int a[] = {20,10,30,40,50};
+	set<int> s1(a, a + 5);
+	for (auto it = s1.cbegin(); it != s1.cend(); it++)//秀啊，原来可以这么操作； 
+	{
+		cout << *it << " ";
+	}
+	cout << endl;
+ 
+	string b[] = {"apple", "banana", "pear", "orange", "strawberry"};
+	set<string> s2(b, b + 5);
+	for (auto it = s2.cbegin(); it != s2.cend(); it++)
+	{
+		cout << *it << endl;
+	}
+	cout << endl;
+	system("pause");
+	return 0;
+}

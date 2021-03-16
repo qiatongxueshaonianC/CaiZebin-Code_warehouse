@@ -1,0 +1,86 @@
+#include<bits/stdc++.h>
+using namespace std;
+struct Node{
+	int data,level;
+	Node *father,*left,*right;
+	Node(int a){
+		data=a;
+		level=1;
+		father=left=right=NULL;
+	}
+	Node(){
+		father=left=right=NULL;
+		level=1;
+	}
+};
+int M,n;
+set<int> st; 
+void insert(Node* &root,int v){
+	if(root==NULL){
+		root=new Node(v);
+		return;
+	}
+	if(v<root->data){
+		insert(root->left,v);
+		root->left->level=root->level+1;
+		root->left->father=root;
+	}	
+	else {
+		insert(root->right,v);
+		root->right->level=root->level+1;
+		root->right->father=root;
+	}
+}
+Node* find(Node* root,int v){
+	if(root->data==v) return root;
+	if(v<root->data) return find(root->left,v);
+	else return find(root->right,v);
+}
+int main() {
+	scanf("%d%d",&M,&n);
+	int u,v;
+	Node* root=NULL;
+	for(int i=0;i<n;i++){
+		scanf("%d",&v);
+		insert(root,v);
+		st.insert(v);
+	}
+	while(M--){
+		scanf("%d%d",&u,&v);
+		if(st.find(u)==st.end()||st.find(v)==st.end()){
+			if(st.find(u)==st.end()&&st.find(v)==st.end())
+				printf("ERROR: %d and %d are not found.\n",u,v);
+			else if(st.find(u)==st.end()) printf("ERROR: %d is not found.\n",u);
+			else if(st.find(v)==st.end()) printf("ERROR: %d is not found.\n",v);
+		}else{
+			Node* leu=find(root,u);
+			Node* lev=find(root,v);
+			bool flag=false;
+			if(leu->level<lev->level){
+				swap(lev,leu);
+				flag=true;
+			} 
+			Node* temp=leu;
+			while(temp->level!=lev->level) temp=temp->father;
+			if(lev->data==temp->data) printf("%d is an ancestor of %d.\n",lev->data,leu->data);
+			else{
+				Node* tempv=lev;
+				while(temp->data!=tempv->data){
+					temp=temp->father;
+					tempv=tempv->father;
+				}
+				printf("LCA of %d and %d is %d.\n",flag?lev->data:leu->data,flag?leu->data:lev->data,temp->data);
+			}
+		}
+	}
+}
+/*
+6 8
+6 3 1 2 5 4 8 7
+2 5
+8 7
+1 9
+12 -3
+0 8
+99 99
+*/

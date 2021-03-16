@@ -1,0 +1,45 @@
+#include<bits/stdc++.h>
+using namespace std; 
+struct Node{
+	int profit,need,dl;
+	bool operator <(const Node& a){
+		return dl!=a.dl?dl<a.dl:need<a.need;
+	}
+};
+vector<Node> A;
+int N,ans,T;
+vector<vector<int>> dp;
+void F(){
+	for(int i=1;i<A.size();i++){
+		for(int j=1;j<=T;j++){
+			dp[i][j]=dp[i-1][j];
+			int k=min(j,A[i].dl)-A[i].need;
+			if(k>=0)
+				dp[i][j]=max(dp[i][j],dp[i-1][k]+A[i].profit);		
+		}
+	}
+} 
+int main() {
+	scanf("%d",&N);
+	A.resize(N+1);dp.resize(N+1);
+	for(int i=1;i<=N;i++)
+		scanf("%d%d%d",&A[i].profit,&A[i].need,&A[i].dl);
+	sort(A.begin(),A.end());
+	T=A.back().dl;
+	fill(dp.begin(),dp.end(),vector<int>(T+1));
+	F();
+	printf("%d",dp[N][T]); 
+	return 0;
+}
+/*
+4
+7 1 3
+10 2 3
+6 1 2
+5 1 1
+
+3
+6 3 3
+3 2 2
+4 1 3
+*/

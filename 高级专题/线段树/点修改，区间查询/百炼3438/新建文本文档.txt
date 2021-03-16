@@ -1,0 +1,99 @@
+#pragma warning(disable:4996)
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<string>
+#include<sstream>
+#include<algorithm>
+#include<cmath>
+#include<climits>
+#include<numeric>
+#include<iterator>
+#include<vector>
+#include<map>
+#include<set>
+#include<queue>
+#include<list>
+#include<bitset>
+#define lowbit(x) x&(-x);
+using namespace std;
+const int maxn = 50010;
+int Max[maxn * 4], Min[maxn * 4];
+int N, Q;
+void build(int rt, int L, int R) {
+	int Mid = (L + R) / 2;
+	if (L == R) {
+		scanf("%d", &Max[rt]);
+		Min[rt] = Max[rt];
+	}
+	else {
+		build(rt * 2, L,Mid);
+		build(rt * 2 + 1, Mid + 1, R);
+		Max[rt] = max(Max[rt * 2], Max[rt * 2 + 1]);
+		Min[rt] = min(Min[rt * 2], Min[rt * 2 + 1]);
+	}
+}
+void update(int rt, int L, int R, int pos, int num) {
+	int Mid = (L + R) / 2;
+	if (L==R&&R==pos) {
+		Max[rt] = num;
+		Min[rt] = num;
+	}
+	else {
+		if (pos <= Mid) 
+			update(rt * 2, L, Mid, pos, num);
+		else
+			update(rt * 2 + 1, Mid + 1, R, pos, num);
+		Max[rt] = max(Max[rt * 2], Max[rt * 2 + 1]);
+		Min[rt] = min(Min[rt * 2], Min[rt * 2 + 1]);
+	}
+}
+pair<int, int> query(int rt,int l,int r,int L, int R) {
+	int Mid = (l + r) / 2;
+	pair<int, int> ans(-INT_MAX,INT_MAX),temp;  //2020/4/8/21:34发现，这里要初始化好
+	if (L <= l && r <= R) {
+		ans.first = Max[rt];
+		ans.second = Min[rt];
+	}
+	else {
+		if (L <= Mid) {
+			temp = query(rt * 2, l, Mid, L, R);
+			ans.first = max(ans.first, temp.first);
+			ans.second = min(ans.second, temp.second);
+		}
+		if (R > Mid) {
+			temp = query(rt * 2 + 1, Mid + 1, r, L, R);
+			ans.first = max(ans.first, temp.first);
+			ans.second = min(ans.second, temp.second);
+		}
+	}
+	return ans;
+}
+int main() {
+	cin >> N >> Q;
+//	build(1, 1, N);
+	for (int i = 1; i <= N; i++) {
+		int x;
+		scanf("%d", &x);
+		update(1, 1, N, i, x);
+	}
+	while (Q--) {
+		int L, R;
+		scanf("%d%d", &L, &R);
+		pair<int, int> ans=query(1,1,N,L,R);
+		printf("%d\n", ans.first - ans.second);
+	}
+	return 0;
+}
+/*
+6 3
+1
+7
+3
+4
+2
+5
+1 5
+4 6
+2 2
+*/

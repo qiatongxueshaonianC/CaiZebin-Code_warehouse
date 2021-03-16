@@ -1,0 +1,76 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int maxn=510;
+int n,m; 
+int harsh[maxn],num,father[maxn];
+int findFather(int a){
+	if(father[a]==a) return a;
+	int temp=findFather(father[a]);
+	father[a]=temp;
+	return temp;
+}
+bool cmp(int a){
+	return a%2==1;
+}
+int main() {
+	scanf("%d%d",&n,&m);
+	int u,v;
+	iota(father+1,father+n+1,1); 
+	for(int i=0;i<m;i++){
+		scanf("%d%d",&u,&v);
+		harsh[u]++;
+		harsh[v]++;
+		int fa=findFather(u),fb=findFather(v);
+		if(fa!=fb) father[u]=v;
+	}
+	for(int i=1;i<=n;i++)
+		printf("%d%s",harsh[i],i==n?"\n":" ");
+	int k=0;
+    for(int i=1;i<=n;++i)//查找并查集中集合个数
+        if(findFather(i)==i)
+            ++k;
+	if(k==1){
+		num=count_if(harsh+1,harsh+n+1,cmp);
+		if(num==0) puts("Eulerian");
+		else if(num==2) puts("Semi-Eulerian");
+		else puts("Non-Eulerian");
+	}else puts("Non-Eulerian");
+	return 0;
+}
+/*
+7 12
+5 7
+1 2
+1 3
+2 3
+2 4
+3 4
+5 2
+7 6
+6 3
+4 5
+6 4
+5 6
+
+6 10
+1 2
+1 3
+2 3
+2 4
+3 4
+5 2
+6 3
+4 5
+6 4
+5 6
+
+5 8
+1 2
+2 5
+5 4
+4 1
+1 3
+3 2
+3 4
+5 3
+*/

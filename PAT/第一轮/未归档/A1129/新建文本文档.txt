@@ -1,0 +1,49 @@
+#include<bits/stdc++.h>
+using namespace std; 
+const int maxn=50010;
+int harsh[maxn];
+/*struct cmp{
+	bool operator ()(int a,int b){
+		if(harsh[a]!=harsh[b]) 
+			return harsh[a]>harsh[b];
+		else return a<b;
+	}
+};
+set<int,cmp> st;*/
+//priority_queue<int,vector<int>,cmp> q;
+bool cmp(int a,int b){
+	return harsh[a]!=harsh[b]?harsh[a]>harsh[b]:a<b;
+}
+vector<int> A;
+bool mp[maxn];
+int main() {
+	int n,k,v;
+	scanf("%d%d",&n,&k);
+	scanf("%d",&v);
+	harsh[v]++;
+	A.push_back(v);
+	mp[v]=true;
+//	st.insert(v);
+	for(int i=1;i<n;i++){
+		int idx=0;
+		scanf("%d",&v);
+		harsh[v]++;
+		printf("%d:",v);
+		for(auto i:A){
+			printf(" %d",i);
+			if(++idx==k) break;
+		}
+		puts("");
+		if(mp[v]==false){
+			A.push_back(v);
+			mp[v]=true;
+		} 
+		sort(A.begin(),A.end(),cmp);
+	//	st.insert(v);  //不知道是否会自动调整 
+	}
+	return 0;
+}
+/*
+12 3
+3 5 7 5 5 3 2 1 8 3 8 12
+*/

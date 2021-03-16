@@ -1,0 +1,50 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef  pair<int,pair<int,int>> P;
+bool cmp(const P& u,const P& v){
+	int u1=u.second.second-u.second.first;
+	int v1=v.second.second-v.second.first;
+	return u.first!=v.first?u.first>v.first:u1>v1;
+};
+int main() {
+	int n,left=0,right=0;
+	scanf("%d",&n);
+	vector<int> value(n+1),L(n+1);
+	vector<P> ans;
+	for(int i=1;i<=n;i++)
+		scanf("%d",&value[i]);
+	for(int i=0;i<n;i++)
+		scanf("%d",&L[i]);
+	unordered_set<int> st;st.insert(L[0]);
+	pair<unordered_set<int>,int> now(st,value[L[0]]);
+	for(int i=1;i<n;i++){
+		int v=now.second;
+		if(now.first.find(L[i])==now.first.end()){
+			now.first.insert(L[i]);
+			now.second+=value[L[i]];
+			right=i;
+		}else{
+			ans.push_back({now.second,{left,right}});
+			int j=i;
+			now.first.clear();now.first.insert(L[j]);
+			v=value[L[j--]];
+			while(L[j]!=L[i]){
+				now.first.insert(L[j]);
+				v+=value[L[j--]];
+			}
+			now.second=v;
+			left=j+1;
+			right=i;
+		}
+	}
+	ans.push_back({now.second,{left,right}});
+	sort(ans.begin(),ans.end(),cmp);
+	auto I=*ans.begin();
+	printf("%d %d %d",I.first,I.second.first,I.second.second);
+	return 0;
+}
+/*
+8
+18 20 2 97 23 12 8 5
+3 3 5 8 1 5 2 1
+*/

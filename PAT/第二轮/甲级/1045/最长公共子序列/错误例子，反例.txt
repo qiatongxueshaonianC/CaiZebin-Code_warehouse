@@ -1,0 +1,31 @@
+#include<bits/stdc++.h>
+using namespace std; 
+int main() {
+	int t,N;
+	scanf("%d%d ",&t,&N);
+	string s1,s2;
+	getline(cin,s1);   //不可以这么做因为数字可能是两位或三位的，99，120这些 
+	scanf("%d ",&t);
+	getline(cin,s2);
+	regex r(" ");
+	s1=regex_replace(s1,r,"");	s1.insert(0,"+");
+	s2=regex_replace(s2,r,"");	s2.insert(0,"-");
+//	puts(s1.c_str());
+//	puts(s2.c_str());
+	vector<vector<int>> dp(s1.size(),vector<int>(s2.size(),0)); 
+	for(int i=1;i<s1.size();i++){
+		for(int j=1;j<s2.size();j++){
+			if(s1[i]==s2[j])
+				dp[i][j]=max(dp[i-1][j],dp[i][j-1])+1;
+			else
+				dp[i][j]=max(dp[i-1][j],dp[i][j-1]);
+		}
+	}
+	printf("%d",dp[s1.size()-1][s2.size()-1]);
+	return 0;
+}
+/*
+6
+5 2 3 1 5 6
+12 2 2 4 1 5 5 6 3 1 1 5 6
+*/

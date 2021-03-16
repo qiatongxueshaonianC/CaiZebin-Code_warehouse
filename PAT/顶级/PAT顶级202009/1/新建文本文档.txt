@@ -1,0 +1,58 @@
+#pragma warning(disable:4996)
+#include<bits/stdc++.h>
+using namespace std;
+const int maxn = 1e4 + 10;
+const int inf = 0x3fffffff;
+vector<vector<int>>G(maxn),weight(maxn);
+int N, M,d[maxn],Dis;
+vector<set<int>> pre(maxn);
+bool vis[maxn];
+vector<int> temp, ans;
+int Prime(int s) {
+	fill(d, d + maxn, inf);
+	d[s] = 0;
+	vis[s] = true;
+	for (int i = 0; i < N; i++) {
+		int u=-1, Min = inf;
+		for (int i = 0; i < N; i++) {
+			if (vis[i] == false && d[i] < Min) {
+				Min = d[i];
+				u = i;
+			}
+		}
+		if (u == -1)
+			return;
+		for (int i = 0; i < N; i++) {
+			if (G[u][i] != inf) {
+				if (d[i] > G[u][i]) {
+					d[i] = G[u][i];
+					pre[i].clear();
+					pre[i].insert(u);
+				}
+				else if (d[i] == G[u][i]) {
+					pre[i].insert(u);
+				}
+			}
+		}
+	}
+	int sum = 0;
+	for (int i = 0; i < N; i++)
+		sum += d[i];
+	return sum;
+}
+
+int main() {
+	//std::ios::sync_with_stdio(false);
+	fill(G.begin(), G.end(), inf);
+	fill(weight.begin(), weight.end(), inf);
+	scanf("%d%d", &N, &M);
+	for (int i = 0; i < M; i++) {
+		int u, v, dis, w;
+		scanf("%d%d%d%d", &u, &v, &dis, &w);
+		G[u][v] = dis;
+		weight[u][v] = w;
+	}
+	Dis=Prime(0);
+	
+	return 0;
+}

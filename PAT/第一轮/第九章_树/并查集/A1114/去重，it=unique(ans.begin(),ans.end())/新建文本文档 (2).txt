@@ -1,0 +1,98 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int maxn=10005;
+struct Node{
+	int id,member,flag; //使用id是为了之后排序，依赖下标就会使id错乱 
+	double met,area;
+	Node():met(0),area(0),member(1),flag(-1){}
+}F[maxn];
+int father[maxn];
+int findFather(int a){
+	if(father[a]==a) return a;
+	int temp=findFather(father[a]);
+	father[a]=temp;
+	return temp;
+}
+void Union(int a,int b){
+	int fa=findFather(a);
+	int fb=findFather(b);
+	if(fa!=fb){
+		int mi=min(fa,fb);
+		int ma=max(fa,fb);
+		father[ma]=mi;
+	}
+}
+bool cmp(Node a,Node b){
+	return a.flag>b.flag;
+}
+bool cmp2(int a,int b){
+/*	F[a].met/=F[a].member;  //在这里排序的时候顺便算掉
+	F[a].area/=F[a].member;
+	F[b].met/=F[b].member; 
+	F[b].area/=F[b].member;*/
+	return F[a].area!=F[b].area?F[a].area>F[b].area:F[a].id>F[b].id;
+}
+bool bst[maxn];
+int main() {
+	iota(father,father+maxn,0);
+	int n,id,fa,ma,k,child;
+	double met,area;
+	scanf("%d",&n);
+	for(int i=0;i<n;i++){
+		scanf("%d%d%d%d",&id,&fa,&ma,&k);
+		if(fa!=-1)	Union(id,fa);
+		if(ma!=-1)	Union(id,ma);
+		while(k--){
+			scanf("%d",&child);
+			Union(id,child);
+		}
+	//	scanf("%lf%lf",&F[id].met,&F[id].area);
+		cin>>F[id].met>>F[id].area;
+		F[id].id=id; 
+		F[id].flag=1;  //设为有效节点 
+	}
+//	sort(F,F+10010,cmp); 
+
+	vector<int> ans;
+	for(int i=0;i<maxn;i++){
+		if(F[i].flag==-1&&F[findFather(i)].flag==-1) continue;
+	//	int id=F[i].id;
+		int fa=findFather(i);
+		if(fa!=i){
+			F[fa].met+=F[i].met;
+			F[fa].area+=F[i].area;
+			F[fa].member++;  //成员加一
+		}
+		if(bst[fa]==0){
+			bst[fa]=1;
+			ans.push_back(fa);
+		} 
+	}
+	for(auto &i:ans){
+		F[i].met/=F[i].member;  //在这里排序的时候顺便算掉
+		F[i].area/=F[i].member;
+	}
+	sort(ans.begin(),ans.end(),cmp2);
+	printf("%d\n",ans.size());
+	for(auto i:ans){
+		printf("%04d %d %.3lf %.3lf\n",i,F[i].member,F[i].met,F[i].area);
+	}
+	return 0;
+}
+/*
+2
+1 2 3 1 4 1 100
+5 6 7 1 8 2 300
+
+10
+6666 5551 5552 1 7777 1 100
+1234 5678 9012 1 0002 2 300
+8888 -1 -1 0 1 1000
+2468 0001 0004 1 2222 1 500
+7777 6666 -1 0 2 300
+3721 -1 -1 1 2333 2 150
+9012 -1 -1 3 1236 1235 1234 1 100
+1235 5678 9012 0 1 50
+2222 1236 2468 2 6661 6662 1 300
+2333 -1 3721 3 6661 6662 6663 1 100
+*/

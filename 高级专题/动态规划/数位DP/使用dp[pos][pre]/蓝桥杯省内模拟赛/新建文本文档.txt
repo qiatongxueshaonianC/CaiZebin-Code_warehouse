@@ -1,0 +1,47 @@
+#include <iostream>
+#include<cstdio>
+#include<cstring>
+#include<string>
+#include<sstream>
+#include<algorithm>
+#include<cmath>
+#include<climits>
+#include<numeric>
+#include<vector>
+#include<map>
+#include<set>
+#include<queue>
+#include<stack>
+#include<list>
+#include<fstream>
+#define lowbit(x) x&(-x) 
+using namespace std;
+const int MOD=100000007;
+const int maxn=1e6+10;
+int dp[maxn],n;
+int DFS(int n){
+	if(n==0)
+		return 1;
+	int ans=0;
+	if(dp[n]!=0)
+		return dp[n];
+	ans+=DFS(n-1);
+	if(n>=2)
+		ans+=DFS(n-2);
+	dp[n]=ans%MOD;
+	return dp[n];
+}
+int main() {
+	cin>>n;
+	ofstream output;
+	output.open("output.txt");
+	for(;n<=1e6;n++){
+		DFS(n);
+		output<<dp[n]<<',';
+	//	printf("%d,",dp[n]);
+	}
+	return 0;
+}
+/*
+1000000
+*/

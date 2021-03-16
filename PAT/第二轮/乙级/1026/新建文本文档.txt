@@ -1,0 +1,13 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+int main() {
+	ll c1,c2,ans;
+	scanf("%lld%lld",&c1,&c2);
+	ans=(c2-c1)/100;
+	ans+=(c2-c1)%100>=50?1:0;
+	printf("%02d:%02d:%02d",ans/3600,(ans%3600)/60,ans%60);
+}
+/*
+123 4577973
+*/
